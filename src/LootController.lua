@@ -19,7 +19,7 @@ local item_utils = m.ItemUtils
 ---@param softres GroupAwareSoftRes
 ---@param rolling_logic RollingLogic
 ---@param chat Chat
-function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller, softres, rolling_logic, chat )
+function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller, softres, rolling_logic, chat, config )
   -- This will store which items were selected, because we'll lost that info when the loot is closed.
   -- Upon loot opening, we'll check it here and reselect if appropriate.
   local item_selection_cache = {}
