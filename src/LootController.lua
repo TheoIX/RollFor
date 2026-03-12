@@ -250,17 +250,34 @@ function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller
             return
           end
 
-          local master_loot = m.is_master_loot()
+          if is_coin or selected then
+  return
+end
 
-          if is_coin or selected or not master_loot then return end
+if m.is_master_loot() then
+  if not player_info.is_master_looter() then
+    chat.info( "You are not the master looter.", m.colors.red )
+    return
+  end
 
-          if master_loot and not player_info.is_master_looter() then
-            chat.info( "You are not the master looter.", m.colors.red )
-            return
-          end
+  select_item( entries, selected_entry.item, selected_entry.hard_ressed, selected_entry.soft_ressed )
+  update()
+  return
+end
 
-          select_item( entries, selected_entry.item --[[@as DroppedItem]], selected_entry.hard_ressed, selected_entry.soft_ressed ); update()
-        end,
+-- Group Loot: only Alt+LeftClick should start the roll directly
+if m.is_alt_key_down() then
+  local c = find_top_priority_comment( item.id, entries )
+  local count = count_selected_items( entries, item.id, c )
+
+  roll_controller.start(
+    m.Types.RollingStrategy.NormalRoll,
+    selected_entry.item,
+    count,
+    config.default_rolling_time_seconds()
+  )
+  return
+end
         is_selected = selected or false,
         is_enabled = selected or not selected_item or false,
         slot = loot_list.get_slot( is_coin and "Coin" or item.id ),
