@@ -268,7 +268,7 @@ function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller
   end
 
   -- Group Loot: only Alt+LeftClick should start the roll directly
-  if m.is_alt_key_down() then
+  if IsAltKeyDown() then
     local c = find_top_priority_comment( item.id, entries )
     local count = count_selected_items( entries, item.id, c )
 
