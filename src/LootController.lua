@@ -229,55 +229,58 @@ function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller
         quantity = item.quantity,
         link = item.link,
         click_fn = function()
-          if m.is_ctrl_key_down() then
-            m.api.DressUpItemLink( item.link )
-            return
-          end
-
-          if m.is_shift_key_down() then
-            m.link_item_in_chat( item.link )
-            return
-          end
-
-          if m.bcc and (is_coin or item.quality < 2) then
-            local slot = loot_list.get_slot( item.id )
-            if slot then loot_facade.loot_slot( slot ) end
-            return
-          end
-
-          if rolling_logic.is_rolling() then
-            chat.info( "Cannot select item while rolling is in progress.", m.colors.red )
-            return
-          end
-
-          if is_coin or selected then
-  return
-end
-
-if m.is_master_loot() then
-  if not player_info.is_master_looter() then
-    chat.info( "You are not the master looter.", m.colors.red )
+  if m.is_ctrl_key_down() then
+    m.api.DressUpItemLink( item.link )
     return
   end
 
-  select_item( entries, selected_entry.item, selected_entry.hard_ressed, selected_entry.soft_ressed )
-  update()
-  return
-end
+  if m.is_shift_key_down() then
+    m.link_item_in_chat( item.link )
+    return
+  end
 
--- Group Loot: only Alt+LeftClick should start the roll directly
-if m.is_alt_key_down() then
-  local c = find_top_priority_comment( item.id, entries )
-  local count = count_selected_items( entries, item.id, c )
+  if m.bcc and (is_coin or item.quality < 2) then
+    local slot = loot_list.get_slot( item.id )
+    if slot then
+      loot_facade.loot_slot( slot )
+    end
+    return
+  end
 
-  roll_controller.start(
-    m.Types.RollingStrategy.NormalRoll,
-    selected_entry.item,
-    count,
-    config.default_rolling_time_seconds()
-  )
-  return
-end
+  if rolling_logic.is_rolling() then
+    chat.info( "Cannot select item while rolling is in progress.", m.colors.red )
+    return
+  end
+
+  if is_coin or selected then
+    return
+  end
+
+  if m.is_master_loot() then
+    if not player_info.is_master_looter() then
+      chat.info( "You are not the master looter.", m.colors.red )
+      return
+    end
+
+    select_item( entries, selected_entry.item, selected_entry.hard_ressed, selected_entry.soft_ressed )
+    update()
+    return
+  end
+
+  -- Group Loot: only Alt+LeftClick should start the roll directly
+  if m.is_alt_key_down() then
+    local c = find_top_priority_comment( item.id, entries )
+    local count = count_selected_items( entries, item.id, c )
+
+    roll_controller.start(
+      m.Types.RollingStrategy.NormalRoll,
+      selected_entry.item,
+      count,
+      config.default_rolling_time_seconds()
+    )
+    return
+  end
+end,
         is_selected = selected or false,
         is_enabled = selected or not selected_item or false,
         slot = loot_list.get_slot( is_coin and "Coin" or item.id ),
