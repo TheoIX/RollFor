@@ -397,8 +397,9 @@ local function create_components()
     M.roll_controller,
     M.softres,
     M.rolling_logic,
-    M.chat
-  )
+    M.chat,
+    M.config
+ )
 
   ---@type ArgsParser
   M.args_parser = m.ArgsParser.new( m.ItemUtils, M.config )
