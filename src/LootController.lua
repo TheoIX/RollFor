@@ -281,6 +281,7 @@ function M.new( player_info, loot_facade, loot_list, loot_frame, roll_controller
     return
   end
 end,
+          
         is_selected = selected or false,
         is_enabled = selected or not selected_item or false,
         slot = loot_list.get_slot( is_coin and "Coin" or item.id ),
